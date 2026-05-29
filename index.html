@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#1c1c1e" media="(prefers-color-scheme: dark)" />
+  <title>收入记录本</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="phone-shell">
+    <main class="app">
+      <header class="topbar">
+        <div class="title-block">
+          <h1>收入记录本</h1>
+          <p id="todayText">记录每一次认真上课</p>
+        </div>
+        <div class="top-actions">
+          <button class="icon-btn" id="exportTopBtn" title="导出备份">⇩</button>
+          <button class="icon-btn" id="todayBtn" title="回到今天">⌖</button>
+        </div>
+      </header>
+
+      <section class="hero">
+        <div class="label" id="heroMonth">本月收入</div>
+        <div class="amount" id="monthIncome">¥0</div>
+        <div class="stats">
+          <div class="stat"><b id="monthHours">0h</b><span>总课时</span></div>
+          <div class="stat"><b id="monthCount">0</b><span>记录数</span></div>
+          <div class="stat"><b id="avgRate">¥0</b><span>平均单价</span></div>
+        </div>
+      </section>
+
+      <section class="page active" id="homePage">
+        <section class="card">
+          <div class="month-head">
+            <div class="month-title" id="monthTitle">2026年5月</div>
+            <div class="month-actions">
+              <button class="mini-btn" id="prevMonth" title="上个月">‹</button>
+              <button class="mini-btn text" id="thisMonthBtn" title="回到本月">本月</button>
+              <button class="mini-btn" id="nextMonth" title="下个月">›</button>
+            </div>
+          </div>
+          <div class="weekdays">
+            <div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div><div>日</div>
+          </div>
+          <div class="calendar-grid" id="calendarGrid"></div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <h2 id="selectedTitle">今日记录</h2>
+            <span id="selectedTotal">¥0</span>
+          </div>
+          <div class="records" id="records"></div>
+        </section>
+      </section>
+
+      <section class="page" id="statsPage">
+        <section class="card chart-card">
+          <div class="section-head">
+            <h2>收入可视化</h2>
+            <span id="chartRangeText">本月</span>
+          </div>
+          <div class="segmented">
+            <button id="dailyTab" class="active" data-mode="daily">每天</button>
+            <button id="weeklyTab" data-mode="weekly">每周</button>
+            <button id="monthlyTab" data-mode="monthly">每月</button>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="incomeChart"></canvas>
+          </div>
+          <div class="chart-meta">
+            <div class="meta-chip"><span>总收入</span><b id="chartTotal">¥0</b></div>
+            <div class="meta-chip"><span>最高</span><b id="chartMax">¥0</b></div>
+            <div class="meta-chip"><span>平均</span><b id="chartAvg">¥0</b></div>
+          </div>
+          <div class="chart-detail" id="chartDetail">点击柱状图，查看该柱收入。</div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <h2>本周收入</h2>
+            <span id="weeklyHint">本周视图</span>
+          </div>
+          <div class="week-list" id="weekList"></div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <h2>自定义查询</h2>
+            <span>时间 / 关键词</span>
+          </div>
+          <div class="row">
+            <div>
+              <label for="queryStart">开始日期</label>
+              <input id="queryStart" type="date" />
+            </div>
+            <div>
+              <label for="queryEnd">结束日期</label>
+              <input id="queryEnd" type="date" />
+            </div>
+          </div>
+          <label for="queryKeyword">搜索关键词</label>
+          <input id="queryKeyword" placeholder="搜索学生 / 课程 / 地点备注，可留空" />
+          <div class="data-actions">
+            <button class="soft-btn primary-soft" id="runQueryBtn">查询收入</button>
+            <button class="soft-btn" id="resetQueryBtn">重置</button>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <h2>查询结果</h2>
+            <span id="queryCount">0条</span>
+          </div>
+          <div class="query-summary">
+            <div class="query-chip"><span>总收入</span><b id="queryIncome">¥0</b></div>
+            <div class="query-chip"><span>总课时</span><b id="queryHours">0h</b></div>
+            <div class="query-chip"><span>平均单价</span><b id="queryAvg">¥0</b></div>
+          </div>
+          <div class="query-records" id="queryDetails"></div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <h2>数据备份</h2>
+            <span id="recordCountText">0条</span>
+          </div>
+          <p class="data-note">数据默认只保存在当前浏览器。为了长期记录，建议每周或每月导出一次备份文件；换设备时再导入即可。</p>
+          <div class="data-actions">
+            <button class="soft-btn primary-soft" id="exportBtn">导出备份</button>
+            <button class="soft-btn" id="importBtn">导入备份</button>
+          </div>
+          <input class="hidden-input" id="importFile" type="file" accept="application/json,.json" />
+        </section>
+      </section>
+
+    </main>
+
+    <nav class="bottom-nav" aria-label="底部导航">
+      <button class="nav-btn active" id="homeNav">日历</button>
+      <button class="add-round" id="addBtn" aria-label="新增记录">＋</button>
+      <button class="nav-btn" id="statsNav">统计</button>
+    </nav>
+  </div>
+
+  <div class="mask" id="mask"></div>
+  <aside class="sheet" id="sheet" aria-hidden="true">
+    <div class="sheet-card">
+      <div class="grabber"></div>
+      <div class="form-head">
+        <h2 id="formTitle">新增记录</h2>
+        <button class="close" id="closeBtn">×</button>
+      </div>
+
+      <label for="student">学生</label>
+      <input id="student" placeholder="例如：小林" />
+
+      <label for="course">课程</label>
+      <input id="course" placeholder="例如：A Level 化学" />
+
+      <label for="date">日期</label>
+      <input id="date" type="date" />
+
+      <div class="row">
+        <div>
+          <label for="hours">小时数</label>
+          <input id="hours" type="number" min="0" step="0.5" placeholder="2" inputmode="decimal" />
+        </div>
+        <div>
+          <label for="rate">单价 / 小时</label>
+          <input id="rate" type="number" min="0" step="1" placeholder="300" inputmode="decimal" />
+        </div>
+      </div>
+
+      <label for="note">地点 / 备注</label>
+      <textarea id="note" placeholder="例如：线上 / 咖啡店 / 氧化还原专题"></textarea>
+
+      <div class="preview">
+        <span>本次收入</span>
+        <span id="previewIncome">¥0</span>
+      </div>
+
+      <div class="form-actions">
+        <button class="primary-btn" id="saveBtn">保存记录</button>
+        <button class="danger-btn" id="deleteBtn" style="display:none;">删除这条记录</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast">已保存</div>
+  <script src="./app.js" defer></script>
+</body>
+</html>
